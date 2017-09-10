@@ -10,12 +10,12 @@ import MetalKit
 final class GPUVariable<T> {
     private(set) var buffer : MTLBuffer
 
-    init(gpu: MTLDevice, value : T) {
+    init(gpu: MTLDevice, value : T, options: MTLResourceOptions = []) {
         var v = value
 
         buffer = gpu.makeBuffer(bytes: &v,
                                 length: MemoryLayout<T>.size,
-                                options: [])!
+                                options: options)!
     }
 
     deinit {
