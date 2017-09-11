@@ -11,7 +11,7 @@ import GLKit
 
 extension simd_float4 : CustomStringConvertible {
     public var description : String {
-        return String(format: "%.3f, %.3f, %.3f, %.3f", x,y,z,w)
+        return .init(format: "%.3f, %.3f, %.3f, %.3f", x,y,z,w)
     }
 }
 
@@ -48,7 +48,7 @@ extension simd_float4x4 : CustomStringConvertible {
 
     @inline(__always)
     init(scale s: Float) {
-        self.init(scale : float3(s, s, s))
+        self.init(scale : float3(s))
     }
 
     public var description : String {
@@ -70,11 +70,6 @@ extension simd_float4x4 : CustomStringConvertible {
     }
 
     @inline(__always)
-    public init(viewport : MTLViewport) {
-        fatalError()
-    }
-
-    @inline(__always)
     public init(translation t: float3) {
         let x : float4 = [1, 0, 0, 0]
         let y : float4 = [0, 1, 0, 0]
@@ -82,7 +77,6 @@ extension simd_float4x4 : CustomStringConvertible {
         let w : float4 = [t.x,t.y,t.z,1]
         self.init(columns: (x,y,z,w))
     }
-
 
     @inline(__always)
     public init(aspect:Float, fovy:Float, near:Float, far:Float) {
