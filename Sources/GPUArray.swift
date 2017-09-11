@@ -36,7 +36,6 @@ struct MetalStorage<Element> : MutableCollection {
         fatalError()
     }
 
-
     var capacity : Int {
         return content.length / MemoryLayout<Element>.size
     }
@@ -72,15 +71,20 @@ struct MetalStorage<Element> : MutableCollection {
     }
 }
 
-public final class GPUArray<Element> : RangeReplaceableCollection, RandomAccessCollection {
+public final class GPUArray<Element> : RangeReplaceableCollection,
+                                       MutableCollection,
+                                       RandomAccessCollection,
+                                       ExpressibleByArrayLiteral {
     public typealias Index = Int
     private var content : MetalStorage<Element>
+
+    public init(arrayLiteral elements: Element...) {
+        fatalError()
+    }
 
     public init() {
         fatalError()
     }
-
-    //private let content : [Element]
 
     public var startIndex : Index {
         return 0
@@ -95,8 +99,12 @@ public final class GPUArray<Element> : RangeReplaceableCollection, RandomAccessC
     }
 
     public subscript(index: Index) -> Element {
-        //return content[index]
-        fatalError()
+        get {
+            return content[index]
+        }
+        set {
+            content[index] = newValue
+        }
     }
 
     public func index(after i: Index) -> Index {
