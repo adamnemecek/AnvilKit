@@ -9,31 +9,31 @@ import MetalKit
 
 extension UnsafeMutablePointer {
     @inline(__always)
-    init(mtlBuffer : MTLBuffer) {
+    internal init(mtlBuffer : MTLBuffer) {
         self.init(OpaquePointer(mtlBuffer.contents()))
     }
 }
 
 extension UnsafeMutableBufferPointer {
     @inline(__always)
-    init(mtlBuffer : MTLBuffer) {
+    internal init(mtlBuffer : MTLBuffer) {
         let count = mtlBuffer.length / MemoryLayout<Element>.size
         self.init(start: .init(mtlBuffer : mtlBuffer), count: count)
     }
 }
 
 extension MemoryLayout {
-    static var pageSize : Int {
+    internal static var pageSize : Int {
         return Int(getpagesize())
     }
 
     // TODO: page aligned allocations
-    static func pageAligned(count : Int) -> Int {
+    internal static func pageAligned(count : Int) -> Int {
         return count
     }
 }
 
-struct MetalBuffer<Element> : MutableCollection {
+internal struct MetalBuffer<Element> : MutableCollection {
     typealias Index = Int
 
     private var content : MTLBuffer
@@ -202,8 +202,7 @@ public final class GPUArray<Element> : RangeReplaceableCollection,
                 i += 1
                 newElements.formIndex(after: &j)
             }
-            
-            
+
             // If the size didn't change, we're done.
             if growth == 0 {
                 return
