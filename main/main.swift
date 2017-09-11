@@ -14,6 +14,9 @@ struct A {
     let b : Int32 = 10
 }
 
-let q = MTLVertexDescriptor(reflecting: A())
+var a : GPUArray<Int> = [1,2,3,4,5]
 
+a.replaceSubrange(0..<2, with: [1])
+
+print(a)
 

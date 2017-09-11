@@ -22,6 +22,17 @@ extension UnsafeMutableBufferPointer {
     }
 }
 
+extension MemoryLayout {
+    static var pageSize : Int {
+        return Int(getpagesize())
+    }
+
+    // TODO: page aligned allocations
+    static func pageAligned(count : Int) -> Int {
+        return count
+    }
+}
+
 struct MetalBuffer<Element> : MutableCollection {
     typealias Index = Int
 
@@ -31,6 +42,8 @@ struct MetalBuffer<Element> : MutableCollection {
 
     init(capacity : IndexDistance) {
         /// page align
+        let c = MemoryLayout<Element>.pageAligned(count: capacity)
+
         let length = MemoryLayout<Element>.size * capacity
         content = GPUDevice.shared.device.makeBuffer(length: length, options: [])!
     }
@@ -86,17 +99,12 @@ struct MetalBuffer<Element> : MutableCollection {
     }
 }
 
-extension MemoryLayout {
-    // TODO: page aligned allocations
-    func pageAlignedCount(for count : Int) -> Int {
-        return count
-    }
-}
-
 public final class GPUArray<Element> : RangeReplaceableCollection,
     MutableCollection,
     RandomAccessCollection,
-ExpressibleByArrayLiteral {
+    ExpressibleByArrayLiteral,
+    CustomStringConvertible {
+
     public typealias Index = Int
 
     public private(set) var count : IndexDistance
@@ -104,14 +112,16 @@ ExpressibleByArrayLiteral {
 
     public init(arrayLiteral elements: Element...) {
         count = elements.count
-
         content = .init(capacity : elements.count)
-
         _ = content.ptr.initialize(from: elements)
     }
 
     public init() {
         fatalError()
+    }
+
+    public var description: String {
+        return map { $0 }.description
     }
 
     public var startIndex : Index {
@@ -150,17 +160,6 @@ ExpressibleByArrayLiteral {
     public func replaceSubrange<C: Collection>(_ subrange: Range<Index>, with newElements: C) where C.Iterator.Element == Element {
         /// adapted from https://github.com/apple/swift/blob/ea2f64cad218bb64a79afee41b77fe7bfc96cfd2/stdlib/public/core/ArrayBufferProtocol.swift#L140
 
-        //        let oldCount = count
-        //        let eraseCount = subrange.count
-        //        let insertCount = Int(newElements.count)
-        //        let growth = insertCount - eraseCount
-        
-        //        internal mutating func replaceSubrange<C>(
-        //            _ subrange: Range<Int>,
-        //            with newCount: Int,
-        //            elementsOf newValues: C
-        //            ) where C : Collection, C.Element == Element {
-        //            _sanityCheck(startIndex == 0, "_SliceBuffer should override this function.")
         let newCount = Int(newElements.count)
 
         let oldCount = self.count
