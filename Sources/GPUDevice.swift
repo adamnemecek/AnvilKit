@@ -7,17 +7,14 @@
 
 import MetalKit
 
-final class GPUDevice {
 
-    let device : MTLDevice = MTLCreateSystemDefaultDevice()!
-    let library : MTLLibrary
-    let commandQueue: MTLCommandQueue
 
-    static let shared = GPUDevice()
+final class GPULibrary {
+    static let shared = GPULibrary()
+    fileprivate var library : MTLLibrary
 
     private init() {
-        library = device.makeDefaultLibrary()!
-        commandQueue = device.makeCommandQueue()!
+        library = GPUDevice.shared.device.makeDefaultLibrary()!
     }
 
     func renderPipeline(vertex: String, frag : String, pixelFormat : MTLPixelFormat = .default) -> MTLRenderPipelineDescriptor {
@@ -39,13 +36,26 @@ final class GPUDevice {
 
         return d
     }
+}
+
+final class GPUDevice {
+
+    let device : MTLDevice = MTLCreateSystemDefaultDevice()!
+
+    let commandQueue: MTLCommandQueue
+
+    static let shared = GPUDevice()
+
+    private init() {
+        commandQueue = device.makeCommandQueue()!
+    }
 
     func makeCommandBuffer() -> MTLCommandBuffer {
         return commandQueue.makeCommandBuffer()!
     }
 
     func computePipeline(name : String) -> MTLComputePipelineState {
-        let f = library.makeFunction(name: name)!
+        let f = GPULibrary.shared.library.makeFunction(name: name)!
         return try! device.makeComputePipelineState(function: f)
     }
 
