@@ -20,6 +20,10 @@ public final class GPUArray<Element> : RangeReplaceableCollection, RandomAccessC
         fatalError()
     }
 
+    public var count : IndexDistance {
+        fatalError()
+    }
+
     public var endIndex : Index {
         fatalError()
     }

@@ -26,3 +26,26 @@ extension MTLViewport {
         return originY + height
     }
 }
+
+extension MemoryLayout {
+    static func size(of type : T.Type) -> Int {
+        return size
+    }
+}
+
+extension Mirror {
+
+}
+
+extension MTLVertexFormat {
+    init(type : Any.Type) {
+        switch type {
+        default:
+            fatalError()
+        }
+    }
+}
+
+extension MTLVertexDescriptor {
+
+}
