@@ -33,13 +33,15 @@ extension MemoryLayout {
     }
 }
 
-extension Mirror {
-
-}
 
 extension MTLVertexFormat {
-    init(type : Any.Type) {
-        switch type {
+    init<T>(type : T.Type) {
+        switch T.self {
+        case is Float.Type : self = .float
+        case is simd_float2.Type: self = .float2
+        case is simd_float3.Type: self = .float3
+        case is simd_float4.Type: self = .float4
+
         default:
             fatalError()
         }
@@ -49,3 +51,5 @@ extension MTLVertexFormat {
 extension MTLVertexDescriptor {
 
 }
+
+
