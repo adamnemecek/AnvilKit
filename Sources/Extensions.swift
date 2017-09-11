@@ -15,7 +15,7 @@ extension MTLTexture {
 }
 
 extension MTLPixelFormat {
-    static let `default` : MTLPixelFormat = .bgra8Unorm
+    public static let `default` : MTLPixelFormat = .bgra8Unorm
 }
 
 extension MTLViewport {
