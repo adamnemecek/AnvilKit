@@ -75,29 +75,53 @@ extension MTLVertexFormat {
     }
 
 
-    init<T>(type : T.Type) {
+    init(type : Any.Type) {
 
-        switch T.self {
-        case is Float.Type : self = .float
+        switch type {
+        case is simd_char1.Type : self = .char
+        case is simd_uchar1.Type : self = .uchar
+
+        case is simd_int1.Type : self = .int
+        case is simd_int2.Type : self = .int2
+        case is simd_int3.Type : self = .int3
+        case is simd_int4.Type : self = .int4
+
+        case is simd_uint1.Type : self = .uint
+        case is simd_uint2.Type : self = .uint2
+        case is simd_uint3.Type : self = .uint3
+        case is simd_uint4.Type : self = .uint4
+
+        case is simd_float1.Type : self = .float
         case is simd_float2.Type: self = .float2
         case is simd_float3.Type: self = .float3
         case is simd_float4.Type: self = .float4
 
-        case is Int32.Type : self = .int
-        case is simd_int2.Type: self = .int2
-        case is simd_int3.Type: self = .int3
-        case is simd_int4.Type: self = .int4
-
-        
-
-
-
-        default:
-            fatalError()
+        default: fatalError()
         }
-
 
     }
 }
 
+extension MTLVertexDescriptor {
+    convenience init<S: Sequence>(seq : S) where S.Iterator.Element == MTLVertexFormat {
+        self.init()
+        var total = 0
+
+        for (i,e) in seq.enumerated() {
+            attributes[i].offset = total
+            attributes[i].format = e
+            attributes[i].bufferIndex = 0
+            total += e.size
+        }
+
+        layouts[0].stepFunction = .perVertex
+        layouts[0].stride = total
+    }
+
+    convenience init<T>(reflecting : T) {
+        let m = Mirror(reflecting : reflecting).children
+        self.init(seq : m.map { MTLVertexFormat(type: type(of: $0) ) } )
+
+    }
+}
 
