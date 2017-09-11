@@ -5,14 +5,7 @@
 //  Created by Adam Nemecek on 9/10/17.
 //
 
-import Cocoa
 import MetalKit
-
-
-struct RenderConfig {
-    let vertex, fragment : String
-    let pixelFormat : MTLPixelFormat
-}
 
 final class GPUDevice {
 

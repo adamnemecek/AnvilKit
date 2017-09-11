@@ -16,6 +16,7 @@ extension simd_float4 : CustomStringConvertible {
 }
 
 extension GLKMatrix4 {
+    @inline(__always)
     init(ortho : CGRect, zoom : Range<CGFloat>) {
         assert(MemoryLayout<GLKMatrix4>.size == MemoryLayout<simd_float4x4>.size)
         self = GLKMatrix4MakeOrtho(Float(ortho.minX),
@@ -25,6 +26,20 @@ extension GLKMatrix4 {
                                    Float(zoom.lowerBound),
                                    Float(zoom.upperBound))
     }
+
+    @inline(__always)
+    init(viewport : MTLViewport) {
+        self = GLKMatrix4MakeFrustum(Float(viewport.originX),
+                                     Float(viewport.destX),
+                                     Float(viewport.originY),
+                                     Float(viewport.destY),
+                                     Float(viewport.znear),
+                                     Float(viewport.zfar))
+    }
+}
+
+extension simd_float3x3 {
+    static let identity : simd_float3x3 = matrix_identity_float3x3
 }
 
 extension simd_float4x4 : CustomStringConvertible {

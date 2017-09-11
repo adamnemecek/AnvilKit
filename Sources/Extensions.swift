@@ -16,3 +16,14 @@ extension MTLTexture {
 extension MTLPixelFormat {
     static let `default` : MTLPixelFormat = .bgra8Unorm
 }
+
+extension MTLViewport {
+    var destX : Double {
+        return originX + width
+    }
+
+    var destY : Double {
+        return originY + height
+    }
+
+}
