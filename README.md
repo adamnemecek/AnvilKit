@@ -19,9 +19,18 @@ computeEncoder.setVariable(variable, index: 0)
 ```
 
 ## float4x4 algebra
+* 
+```
+extension float4x4 {
+	
+}
+```
 
 
 
+# GPUArray
+
+A reference object that resembles `Array`. Unlike `Array`, it has reference semantics, not value semantics. This is due to the fact that `MTLBuffer` itself has reference semantics and Metal application are more likely to have one shared array as opposed to many. 
 
 
 

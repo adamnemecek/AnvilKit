@@ -6,6 +6,7 @@
 //
 
 import simd
+
 import MetalKit
 import GLKit
 
@@ -16,9 +17,9 @@ extension simd_float4 : CustomStringConvertible {
 }
 
 extension GLKMatrix4 {
-    @inline(__always)
+    @inline(__always) internal
     init(ortho : CGRect, zoom : Range<CGFloat>) {
-        assert(MemoryLayout<GLKMatrix4>.size == MemoryLayout<simd_float4x4>.size)
+
         self = GLKMatrix4MakeOrtho(Float(ortho.minX),
                                    Float(ortho.maxX),
                                    Float(ortho.minY),
@@ -27,7 +28,9 @@ extension GLKMatrix4 {
                                    Float(zoom.upperBound))
     }
 
-    @inline(__always)
+
+
+    @inline(__always) internal
     init(viewport : MTLViewport) {
         self = GLKMatrix4MakeFrustum(Float(viewport.originX),
                                      Float(viewport.destX),
@@ -46,20 +49,17 @@ extension simd_float4x4 : CustomStringConvertible {
     static let identity : simd_float4x4 = matrix_identity_float4x4
 
     @inline(__always)
-    init(look position: float3, center: float3, up: float3) {
-
-        let z = normalize(position - center)
-        let x = normalize(cross(up, z))
-        let y = cross(z, x)
-        let t = vector3(-dot(x, position),
-                        -dot(y, position),
-                        -dot(z, position))
-
-        self = .init(vector4(x.x, y.x, z.x, 0.0),
-                     vector4(x.y, y.y, z.y, 0.0),
-                     vector4(x.z, y.z, z.z, 0.0),
-                     vector4(t, 1.0))
+    init(eye: float3, center: float3, up: float3) {
+        self.init(GLKMatrix4MakeLookAt(eye.x, eye.y, eye.z,
+                                       center.x, center.y, center.z,
+                                       up.x, up.y, up.z))
     }
+
+    @inline(__always)
+    init(x : float2, y: float2, zoom : float2) {
+        self.init(GLKMatrix4MakeOrtho(x.x, x.y, y.x, y.y, zoom.x, zoom.y))
+    }
+
 
     @inline(__always)
     init(scale s: Float) {
@@ -71,7 +71,13 @@ extension simd_float4x4 : CustomStringConvertible {
     }
 
     public init(ortho : CGRect, zoom : Range<CGFloat>) {
-        self = unsafeBitCast(GLKMatrix4(ortho: ortho, zoom : zoom), to: simd_float4x4.self)
+        self.init(GLKMatrix4(ortho: ortho, zoom : zoom))
+    }
+
+    @inline(__always)
+    init(_ matrix : GLKMatrix4) {
+        assert(MemoryLayout<GLKMatrix4>.size == MemoryLayout<simd_float4x4>.size)
+        self = unsafeBitCast(matrix, to: simd_float4x4.self)
     }
 
     @inline(__always)
