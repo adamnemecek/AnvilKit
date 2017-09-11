@@ -28,13 +28,6 @@ extension MTLViewport {
     }
 }
 
-extension MemoryLayout {
-    static func size(of type : T.Type) -> Int {
-        return size
-    }
-}
-
-
 extension MTLVertexFormat {
 
     var size : Int {
