@@ -29,25 +29,27 @@ struct MetalStorage<Element> : MutableCollection {
 
     private var content : MTLBuffer
 
-    private(set) var count : Int
+//    private(set) var count : Int
 
-    init(capacity : Int) {
-        count = 0
-        fatalError()
+    init(capacity : IndexDistance) {
+        /// page align
+        let length = MemoryLayout<Element>.size * capacity
+        content = GPUDevice.shared.device.makeBuffer(length: length, options: [])!
     }
 
-    var capacity : Int {
+    // note that this is really capacity
+    var count : IndexDistance {
         return content.length / MemoryLayout<Element>.size
     }
 
     //private let content : [Element]
 
     var startIndex : Index {
-        fatalError()
+        return 0
     }
 
     var endIndex : Index {
-        fatalError()
+        return count
     }
 
     private var ptr : UnsafeMutableBufferPointer<Element> {
@@ -56,6 +58,13 @@ struct MetalStorage<Element> : MutableCollection {
             return .init(mtlBuffer: content)
         }
     }
+
+//    func makeIterator() -> AnyIterator<Element> {
+//        var i = ptr.makeIterator()
+//        return .init {
+//            fatalError()
+//        }
+//    }
 
     subscript(index: Index) -> Element {
         get {
@@ -77,6 +86,7 @@ public final class GPUArray<Element> : RangeReplaceableCollection,
                                        ExpressibleByArrayLiteral {
     public typealias Index = Int
     private var content : MetalStorage<Element>
+    public private(set) var count : IndexDistance
 
     public init(arrayLiteral elements: Element...) {
         fatalError()
@@ -90,7 +100,7 @@ public final class GPUArray<Element> : RangeReplaceableCollection,
         return 0
     }
 
-    public var count : IndexDistance {
+    public var capacity : IndexDistance {
         return content.count
     }
 
