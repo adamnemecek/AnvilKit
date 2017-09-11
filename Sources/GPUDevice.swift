@@ -40,15 +40,20 @@ final class GPUDevice {
         return d
     }
 
+    func makeCommandBuffer() -> MTLCommandBuffer {
+        return commandQueue.makeCommandBuffer()!
+    }
+
     func computePipeline(name : String) -> MTLComputePipelineState {
         let f = library.makeFunction(name: name)!
         return try! device.makeComputePipelineState(function: f)
     }
 
     func makeBuffer<T>(for content: [T]) -> MTLBuffer {
+        let length = content.count * MemoryLayout<T>.size
         var cpy = content
         guard let buffer = device.makeBuffer(bytes: &cpy,
-                                             length: content.count * MemoryLayout<T>.size,
+                                             length: length,
                                              options: []) else { fatalError() }
         return buffer
     }

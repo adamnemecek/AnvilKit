@@ -90,7 +90,6 @@ extension MTLVertexFormat {
 
         default: fatalError("cannot construct a vertex format for type \(t)")
         }
-
     }
 }
 
