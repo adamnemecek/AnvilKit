@@ -68,11 +68,10 @@ extension MTLVertexFormat {
     }
 
 
-    init(type : Any.Type) {
-
-        switch type {
-        case is simd_char1.Type : self = .char
-        case is simd_uchar1.Type : self = .uchar
+    init(type t : Any.Type) {
+        switch t {
+//        case is simd_char1.Type : self = .char
+//        case is simd_uchar1.Type : self = .uchar
 
         case is simd_int1.Type : self = .int
         case is simd_int2.Type : self = .int2
@@ -89,7 +88,7 @@ extension MTLVertexFormat {
         case is simd_float3.Type: self = .float3
         case is simd_float4.Type: self = .float4
 
-        default: fatalError()
+        default: fatalError("cannot construct a vertex format for type \(t)")
         }
 
     }
@@ -113,7 +112,7 @@ extension MTLVertexDescriptor {
 
     convenience init<T>(reflecting : T) {
         let m = Mirror(reflecting : reflecting).children
-        self.init(seq : m.map { MTLVertexFormat(type: type(of: $0) ) } )
+        self.init(seq : m.map { MTLVertexFormat(type: type(of: $0.value) ) } )
 
     }
 }
