@@ -7,9 +7,9 @@
 
 import MetalKit
 
-final class GPUDevice {
+public final class GPUDevice {
 
-    let device : MTLDevice = MTLCreateSystemDefaultDevice()!
+    internal let device : MTLDevice = MTLCreateSystemDefaultDevice()!
 
     let commandQueue: MTLCommandQueue
 

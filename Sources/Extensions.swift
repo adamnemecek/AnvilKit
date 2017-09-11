@@ -9,7 +9,7 @@ import MetalKit
 import Darwin
 
 extension MTLTexture {
-    var size : MTLSize {
+    internal var size : MTLSize {
         return .init(width: width, height: height, depth: depth)
     }
 }
@@ -30,7 +30,7 @@ extension MTLViewport {
 
 extension MTLVertexFormat {
 
-    var size : Int {
+    internal var size : Int {
         switch self {
         /// 8-bit types
         case .uchar, .char, .charNormalized, .ucharNormalized:
@@ -68,7 +68,7 @@ extension MTLVertexFormat {
     }
 
 
-    init(type t : Any.Type) {
+    internal init(type t : Any.Type) {
         switch t {
 //        case is simd_char1.Type : self = .char
 //        case is simd_uchar1.Type : self = .uchar
@@ -94,7 +94,7 @@ extension MTLVertexFormat {
 }
 
 extension MTLVertexDescriptor {
-    convenience init<S: Sequence>(seq : S) where S.Iterator.Element == MTLVertexFormat {
+    internal convenience init<S: Sequence>(seq : S) where S.Iterator.Element == MTLVertexFormat {
         self.init()
         var total = 0
 
@@ -109,7 +109,7 @@ extension MTLVertexDescriptor {
         layouts[0].stride = total
     }
 
-    convenience init<T>(reflecting : T) {
+    public convenience init<T>(reflecting : T) {
         let m = Mirror(reflecting : reflecting).children
         self.init(seq : m.map { MTLVertexFormat(type: type(of: $0.value) ) } )
 

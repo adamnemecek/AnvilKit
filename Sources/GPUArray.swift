@@ -232,5 +232,3 @@ public final class GPUArray<Element> : RangeReplaceableCollection,
     
 }
 
-
-
