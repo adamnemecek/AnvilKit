@@ -57,6 +57,15 @@ final class GPUDevice {
                                              options: []) else { fatalError() }
         return buffer
     }
+
+    func makeBuffer<T>(for value : T) -> MTLBuffer {
+        let length = MemoryLayout<T>.size
+        var cpy = value
+        guard let buffer = device.makeBuffer(bytes: &cpy,
+                                             length: length,
+                                             options: []) else { fatalError() }
+        return buffer
+    }
 }
 
 
